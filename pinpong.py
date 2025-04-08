@@ -27,9 +27,9 @@ class hero:
         self.height = 10
     def walk(self):
         pressed = pygame.key.get_pressed()
-        if not self.x <= 30:
+        if not self.x <= 0:
             if pressed[pygame.K_LEFT]: self.x -= 3
-        if not self.x >= 290:
+        if not self.x >= 320:
             if pressed[pygame.K_RIGHT]: self.x += 3
         pygame.draw.rect(screen, self.color, pygame.Rect(self.x, self.y, self.width, self.height))
 class ball:
@@ -39,8 +39,9 @@ class ball:
         self.y = 50
         self.d = 10
         self.w = -1
-        self.spx = 5
-        self.spy = 5
+        self.sp = 3
+        self.spx = self.sp
+        self.spy = self.sp
     def walk(self):
         pygame.draw.circle(screen,self.color,(self.x,self.y),self.d)
         self.x+=self.spx
@@ -48,24 +49,18 @@ class ball:
     def usl(self,hx,hw,enx):
         if self.x+self.d>=400 or self.x<=0:
             self.spx = -self.spx
-        if (self.y ==350 or self.y==360) and (self.x>=hx and self.x<=hx+hw):
-            self.spy = -self.spy
-        if (self.y ==350 or self.y==360) and (self.x>=hx and self.x<=hx+hw):
+        if (self.y >=350 and self.y<=360) and (self.x>=hx and self.x<=hx+hw):
             self.spy = -self.spy
         for i in enx:
-            if (self.y ==50 or self.y==60) and (self.x >= i[0] and self.x <= i[0] + i[1]):
+            if (self.y >=50 and self.y<=60) and (self.x >= i[0] and self.x <= i[0] + i[1]):
                 self.spy = -self.spy
-            if (self.y >=50 or self.y<=60) and (self.x == i[0] and self.x == i[0] + i[1]):
-                self.spx = -self.spx
         if self.y<=0 or self.y>=400:
             self.spy = -self.spy
 pygame.init()
 screen = pygame.display.set_mode((400,400))
 clock = pygame.time.Clock()
 done = False
-en1 = enemy(-10,335,60,"red")
-en2 = enemy(10,5, 80,"orange")
-en3 = enemy(5,200,60,"yellow")
+en1 = enemy(-10,0,200,"red")
 h = hero()
 b = ball()
 while not done:
@@ -74,13 +69,9 @@ while not done:
             done = True
     h.walk()
     b.walk()
-    b.usl(h.x,h.width,[[en1.x,en1.width],[en2.x,en2.width]])
+    b.usl(h.x,h.width,[[en1.x,en1.width]])
     en1.walk()
     en1.usl()
-    en3.walk()
-    en3.usl()
-    en2.walk()
-    en2.usl()
     pygame.display.flip()
     clock.tick(60)
     screen.fill((0, 0, 0))
