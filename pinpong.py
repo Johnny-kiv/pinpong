@@ -36,48 +36,40 @@ class ball:
     def __init__(self):
         self.color = "white"
         self.x = 200
-        self.y = 200
+        self.y = 50
         self.d = 10
         self.w = -1
+        self.spx = 2
         self.spy = 2
-        self.tx = self.x
-        self.ty = self.y
     def walk(self):
         pygame.draw.circle(screen,self.color,(self.x,self.y),self.d)
-        if self.x == self.tx and self.y==self.ty:
-            print("ye")
-            self.tx,self.ty = self.generetion(self.w)
-            self.w = -self.w
-        print(self.x,self.tx)
-        dx = self.x - self.tx
-
-        dy = self.y - self.ty
-        print(dx/dy * self.spy * self.w)
-        if not dy==0:
-            self.x+=dx/dy * self.spy * self.w * -1
-        self.y +=self.spy *self.w
-    def generetion(self,w):
-        if w == 1:
-            y= 400
-        else:
-            y=0
-        x = random.randrange(31,269)
-        return x,y
+        self.x+=self.spx
+        self.y+=self.spy
+    def usl(self,hx,enx):
+        if self.x+self.d>=400 or self.x<=0:
+            self.spx = -self.spx
+        if self.y ==340 and (self.x>=hx and self.x<=hx+80):
+            self.spy = -self.spy
+        for i in enx:
+            if self.y == 60 and (self.x >= i and self.x <= i + 60):
+                self.spy = -self.spy
+        if self.y<=0 or self.y>=400:
+            self.spy = -self.spy
 pygame.init()
 screen = pygame.display.set_mode((400,400))
 clock = pygame.time.Clock()
 done = False
-en1 = enemy(-5,335,"red")
+en1 = enemy(-10,335,"red")
 en2 = enemy(10,5,"orange")
 h = hero()
 b = ball()
-b.generetion(0)
 while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
     h.walk()
     b.walk()
+    b.usl(h.x,[en1.x,en2.x])
     en1.walk()
     en1.usl()
     en2.walk()
